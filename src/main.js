@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
+import './errorLog'
 import hyappUI from 'hyapp-ui'
 import hyapp from 'hyapp-utils'
 import getBaseUrl from './api/env'
@@ -19,6 +21,7 @@ Vue.config.productionTip = false
 window.vm = new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

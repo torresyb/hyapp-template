@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import {loginHandle} from '../api/controller/HelloWorld'
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'hyapp-template',
@@ -51,9 +51,13 @@ export default {
       msg: 'Welcome to Your hyapp-template App'
     }
   },
+  computed: {
+    ...mapGetters(['getUserInfo'])
+  },
   methods: {
+    ...mapActions(['getUserInfoHandle']),
     handleClick () {
-      loginHandle()
+      this.getUserInfoHandle()
     }
   }
 }

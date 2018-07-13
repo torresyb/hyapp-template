@@ -16,11 +16,9 @@ const store = new Vuex.Store({
   state: {},
   mutations: {},
   modules: {
-    home,
-    // order,
-    // contract
+    home
   },
   strict: process.env.NODE_ENV !== 'production'
 })
 
-export default  store
+export default store
