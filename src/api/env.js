@@ -1,10 +1,8 @@
 let env = {
-  dev: 'http://127.0.0.1:9093',
+  dev: 'http://localhost:8080',
   build: 'http://192.168.184.25:9093'
 }
 
-const getBaseUrl = () => {
-  return process.env.NODE_ENV === 'development' ? env.dev : env.build
+export const getUrl = url => {
+  return process.env.NODE_ENV === 'development' ? (env.dev + url) : (env.build + url)
 }
-
-export default getBaseUrl

@@ -3,7 +3,7 @@
  * @date 2018/4/18
  * @Description: 用户信息
  */
-import {loginHandle} from '../../api/controller/HelloWorld/index'
+import {loginHandle} from '../../api/controller/home/index'
 
 // mutationsType
 const GET_USER = 'GET_USER'

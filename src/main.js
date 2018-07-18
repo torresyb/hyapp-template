@@ -5,15 +5,18 @@ import App from './App'
 import router from './router'
 import store from './store'
 import './errorLog'
+import * as filters from './filters'
 import hyappUI from 'hyapp-ui'
 import hyapp from 'hyapp-utils'
-import getBaseUrl from './api/env'
 
 // 工具类方法
 Vue.use(hyapp.Tools)
-let Http = new hyapp.Utils({baseurl: getBaseUrl()})
-Vue.use(Http)
 Vue.use(hyappUI)
+
+// 过滤器
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
 
 Vue.config.productionTip = false
 
