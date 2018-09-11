@@ -2,48 +2,38 @@
   <div class="hello">
     <h1>{{ msg }}</h1>
     <h2>这是hyapp-ui button组件</h2>
-    <Button @hyClick="handleClick" style="color: #ffffff;">hyapp-utils请求</Button>
-
-    <ul>
-      <li>
-        <a
-          href="https://github.com/torresyb/hyapp-template"
-          target="_blank"
-        >
-          hyapp-template
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.npmjs.com/package/hyapp-cli"
-          target="_blank"
-        >
-          hyapp-cli
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.npmjs.com/package/hyapp-utils"
-          target="_blank"
-        >
-          hyapp-utils
-        </a>
-      </li>
-      <li>
-        <a
-          href="https://www.npmjs.com/package/hyapp-ui"
-          target="_blank"
-        >
-          hyapp-ui
-        </a>
-      </li>
-    </ul>
+    <Button @hyClick="handleClick" class="my-button">hyapp-utils请求</Button>
+    <div class="tabs">
+      <a
+        href="https://github.com/torresyb/hyapp-template"
+        target="_blank"
+      >
+        hyapp-template
+      </a>
+      <a
+        href="https://www.npmjs.com/package/hyapp-cli"
+        target="_blank"
+      >
+        hyapp-cli
+      </a>
+      <a
+        href="https://www.npmjs.com/package/hyapp-utils"
+        target="_blank"
+      >
+        hyapp-utils
+      </a>
+      <a
+        href="https://www.npmjs.com/package/hyapp-ui"
+        target="_blank"
+      >
+        hyapp-ui
+      </a>
+    </div>
   </div>
 </template>
 
 <script>
 import {mapActions, mapGetters} from 'vuex'
-
 export default {
   name: 'hyapp-template',
   data () {
@@ -57,26 +47,25 @@ export default {
   methods: {
     ...mapActions(['getUserInfoHandle']),
     handleClick () {
-      this.getUserInfoHandle()
+      this.getUserInfoHandle ()
     }
   }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this components only -->
-<style scoped>
+<style lang="scss" scoped>
   h1, h2 {
     font-weight: normal;
   }
-  ul {
-    list-style-type: none;
-    padding: 0;
+  .tabs{
+    display: flex;
+    a {
+      width: 187.5px;
+      color: #42b983;
+    }
   }
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-  a {
-    color: #42b983;
+  .my-button{
+    width: 750px;
   }
 </style>

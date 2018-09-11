@@ -7,9 +7,13 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'home-page',
       component: HomeIndex
+    },
+    {
+      path: '/',
+      redirect: '/index'
     }
   ]
 })

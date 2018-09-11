@@ -6,6 +6,7 @@ import router from './router'
 import store from './store'
 import './errorLog'
 import * as filters from './filters'
+import FastClick from 'fastclick'
 import hyappUI from 'hyapp-ui'
 import hyapp from 'hyapp-utils'
 
@@ -17,6 +18,9 @@ Vue.use(hyappUI)
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
+
+// 防止点穿
+FastClick.attach(document.body)
 
 Vue.config.productionTip = false
 

@@ -23,15 +23,16 @@ const mutations = {
 // action
 const actions = {
   getUserInfoHandle ({commit}) {
-    loginHandle().then(rst => {
-      commit(GET_USER, rst.data.data)
+    loginHandle({name: 'torres', pwd: '1212'}).then(rst => {
+      console.log(rst)
+      commit(GET_USER, rst)
     })
   }
 }
 
 const getters = {
   getUserInfo (state) {
-    return state.initNum
+    return state.userInfo
   }
 }
 
