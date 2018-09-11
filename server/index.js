@@ -20,7 +20,7 @@ app.use(cors({
   credentials: true
 }))
 
-app.use(serve(path.resolve(__dirname, './dist')))
+app.use(serve(path.resolve(__dirname, '../dist')))
 //  ****************  装载所有子路由
 // 初始化数据
 router.use('/Api', loginAPI.routes(), loginAPI.allowedMethods())

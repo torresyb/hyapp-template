@@ -3,7 +3,7 @@
     <h1>{{ msg }}</h1>
     <h2>这是hyapp-ui button组件</h2>
     <Button @hyClick="handleClick" class="my-button">hyapp-utils请求</Button>
-    <div class="tabs">
+    <div class="tabs ignore">
       <a
         href="https://github.com/torresyb/hyapp-template"
         target="_blank"
@@ -47,7 +47,7 @@ export default {
   methods: {
     ...mapActions(['getUserInfoHandle']),
     handleClick () {
-      this.getUserInfoHandle ()
+      this.getUserInfoHandle()
     }
   }
 }
@@ -60,6 +60,9 @@ export default {
   }
   .tabs{
     display: flex;
+    &.ignore{
+      margin-top: 10px;
+    }
     a {
       width: 187.5px;
       color: #42b983;

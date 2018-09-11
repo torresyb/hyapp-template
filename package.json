@@ -75,6 +75,7 @@
     "postcss-import": "^11.0.0",
     "postcss-loader": "^2.0.8",
     "postcss-px-to-viewport": "^0.0.3",
+    "postcss-safe-parser": "^4.0.1",
     "postcss-url": "^7.2.1",
     "postcss-viewport-units": "^0.1.4",
     "postcss-write-svg": "^3.0.1",
