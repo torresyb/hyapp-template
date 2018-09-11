@@ -1,6 +1,6 @@
 {
   "name": "hyapp-template",
-  "version": "1.0.4",
+  "version": "v1.0.5",
   "description": "mvvm",
   "author": "yangbin <yangb@2345.com>",
   "scripts": {
@@ -54,7 +54,7 @@
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
     "hyapp-ui": "^1.0.5",
-    "hyapp-utils": "^1.0.8",
+    "hyapp-utils": "^1.1.0",
     "jest": "^22.0.4",
     "jest-serializer-vue": "^0.3.0",
     "koa": "^2.5.2",

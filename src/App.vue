@@ -7,7 +7,14 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data () {
+    return {}
+  },
+  mounted () {
+    // 调用jsbrige方法
+    // console.log(this.$appInvoked)
+  }
 }
 </script>
 
