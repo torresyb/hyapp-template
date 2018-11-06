@@ -7,6 +7,9 @@
 import http from '../../http'
 import {getUrl, getParams} from '../../env'
 
+// 登录接口url
+let loginUrl = getUrl('/login')
+
 /**
  * 登录接口
  * @params query
@@ -15,9 +18,8 @@ import {getUrl, getParams} from '../../env'
  * @returns {*}
  */
 export function loginHandle (params = {}, config = {}) {
-  let _url = getUrl('/login')
   let q = getParams(params)
-  return http.get(_url + '?' + q, config)
+  return http.get(loginUrl + '?' + q, config)
 }
 
 /**
@@ -25,6 +27,5 @@ export function loginHandle (params = {}, config = {}) {
  * @returns {*}
  */
 // export function loginHandle (params = {}, config = {}) {
-//   let _url = getUrl('/login')
-//   return http.post(_url, params, config)
+//   return http.post(loginUrl, params, config)
 // }

@@ -1,11 +1,12 @@
 {
   "name": "hyapp-template",
-  "version": "v1.0.6",
+  "version": "v1.0.9",
   "description": "mvvm",
   "author": "yangbin <yangb@2345.com>",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
+    "skeleton": "webpack --config build/webpack.skeleton.conf.js && node skeleton.js",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
     "test": "npm run unit && npm run e2e",
@@ -52,9 +53,10 @@
     "fastclick": "^1.0.6",
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
+    "html-minifier": "^3.5.21",
     "html-webpack-plugin": "^2.30.1",
     "hyapp-ui": "^1.0.5",
-    "hyapp-utils": "^1.1.2",
+    "hyapp-utils": "^1.1.9",
     "jest": "^22.0.4",
     "jest-serializer-vue": "^0.3.0",
     "koa": "^2.5.2",
@@ -89,12 +91,14 @@
     "url-loader": "^0.5.8",
     "vue-jest": "^1.0.2",
     "vue-loader": "^13.3.0",
+    "vue-server-renderer": "^2.5.16",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "webpack-node-externals": "^1.7.2"
   },
   "engines": {
     "node": ">= 6.0.0",

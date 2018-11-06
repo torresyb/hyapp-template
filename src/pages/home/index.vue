@@ -1,9 +1,10 @@
 <template>
   <div class="hello">
+    <img src="../../assets/images/logo.png"/>
     <h1>{{ msg }}</h1>
     <h2>这是hyapp-ui button组件</h2>
     <Button @hyClick="handleClick" class="my-button">hyapp-utils请求</Button>
-    <div class="tabs ignore">
+    <div class="tabs ignore hy-1px-b">
       <a
         href="https://github.com/torresyb/hyapp-template"
         target="_blank"
@@ -69,6 +70,10 @@ export default {
     }
   }
   .my-button{
-    width: 750px;
+    width: 100%;
+  }
+  .hello{
+    text-align: center;
+    padding: 0 30px;
   }
 </style>

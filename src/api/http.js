@@ -1,5 +1,5 @@
 import axios from 'axios'
-import qs from 'qs'
+// import qs from 'qs'
 
 // axios全局配置
 axios.defaults.withCredentials = true
@@ -8,99 +8,86 @@ axios.defaults.retry = 1
 axios.defaults.retryDelay = 1000
 
 /**
- * 获取请求头和加密
+ * 获取请求头设置
  * @param config
  * @returns {Promise<any>}
  */
 function reqInterceptor (config) {
-  return new Promise(resolve => {
-    window.appInvoked('appGetAjaxHeader', '', rst => {
-      config.headers = Object.assign(config.headers, rst)
-      if (config.method === 'post') {
-        if (config.data && config.data.type === 'upload') {
-          config.data = config.data.form
-          return resolve(config)
-        } else {
-          if (!config.data || JSON.stringify(config.data) === '{}') {
-            return resolve(config)
-          }
-          // 添加token判断登录状态
-          window.appInvoked('appEncryptData', { data: qs.stringify(config.data) }, rst => {
-            config.data = qs.stringify(config.data)
-            return resolve(config)
-          })
-        }
-      } else {
-        return resolve(config)
+  return new Promise((resolve) => {
+    window.vm.$appInvoked('appGetAjaxHeader', {}, rst => {
+      config.headers = Object.assign({}, config.headers, rst)
+      if (config.method === 'post' && config.data && config.data.type === 'upload') {
+        config.data = config.data.form
       }
+      return resolve(config)
     })
-  })
-}
-
-/**
- * 返回结果解密
- * @param rst
- * @returns {Promise<any>}
- */
-function rspInterceptor (rst) {
-  return new Promise((resolve, reject) => {
-    if (rst.data.code === 200) {
-      window.appInvoked('appDecryptData', { data: JSON.stringify(rst.data.data) }, (res) => {
-        rst.data.data = JSON.parse(res)
-        return resolve(rst.data)
-      })
-    } else {
-      if (rst.data.code === 401) {
-        window.appInvoked('appTokenInvalid', {code: rst.data.code, message: rst.data.message})
-      }
-      return reject(rst.data)
-    }
   })
 }
 
 // 请求拦截
 axios.interceptors.request.use(function (config) {
+  let isApp = window.vm.$tools.getBrowser() === 'iOS' || window.vm.$tools.getBrowser() === 'android'
   // 基本设置请求头
   if (config.data && config.data.type === 'upload') {
     config.headers['Content-Type'] = 'multipart/form-data'
   } else {
-    config.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+    config.headers['Content-Type'] = 'application/json'
   }
-  // 判断是否是移动端
-  if (window.isIos || window.isAndroid) {
+  if (isApp) { // 移动端
     return reqInterceptor(config).then(rst => {
       return rst
     })
-  } else {
-    if (config.method === 'post') {
-      if (config.data && config.data.type === 'upload') {
-        config.data = config.data.form
-      } else {
-        // 添加token判断登录状态
-        config.data = qs.stringify(config.data)
-      }
-    };
+  } else { // pc端
+    if (config.method === 'post' && config.data && config.data.type === 'upload') {
+      config.data = config.data.form
+    }
     return config
   }
 }, error => {
   return Promise.reject(error)
 })
+let timestamp1 = Date.parse(new Date())
+// 接口异常监控参数
+let exceptionData = {
+  errorContent: '', // 错误内容
+  errorType: '', // 错误类型 string
+  requestUrl: '', // 接口url string
+  requestUrlFunction: '', // 接口url - 标识 string
+  responseTime: '' // 响应时间 string
+}
 
 // 返回拦截
 axios.interceptors.response.use(function (rst) {
-  if (window.isIos || window.isAndroid) {
-    return rspInterceptor(rst).then(rst => {
-      return Promise.resolve(rst)
-    }).catch(err => {
-      return Promise.reject(err)
-    })
-  } else {
-    if (rst.data.code === 200) {
-      return Promise.resolve(rst.data)
-    }
+  if (rst.data.respCode === '1000') {
+    return Promise.resolve(rst.data)
+  } else if (rst.data.respCode === '1008') { // 1008:未登录
+    window.vm.$appInvoked('appTokenInvalid', {message: rst.data.respMsg})
+    return Promise.reject(rst.data)
+  } else if (rst.data.respCode === '1001') { // 1001:失败!
+    let timestamp2 = Date.parse(new Date())
+    let url = rst.request.responseURL
+    exceptionData.errorContent = rst.data.respMsg && rst.data.respMsg.substring(0, 98)
+    exceptionData.errorType = '30'
+    exceptionData.requestUrl = url
+    exceptionData.requestUrlFunction = url.substring(url.lastIndexOf('/') + 1, url.length).split('?')[0]
+    exceptionData.responseTime = timestamp2 - timestamp1
+    window.vm.$appInvoked('appUrlExceptionMonitor', exceptionData, '')
     return Promise.reject(rst.data)
   }
+  return Promise.reject(rst.data)
 }, function (error) {
+  let timestamp2 = Date.parse(new Date())
+  exceptionData.errorContent = error.message && JSON.stringify(error.message).substring(0, 98)
+  if (error.code === 'ECONNABORTED' && error.message.indexOf('timeout') !== -1) {
+    exceptionData.errorType = '10'
+  } else {
+    exceptionData.errorType = '20'
+  }
+  let url = error.config.url
+  exceptionData.requestUrl = url
+  exceptionData.requestUrlFunction = url.substring(url.lastIndexOf('/') + 1, url.length).split('?')[0]
+  exceptionData.responseTime = timestamp2 - timestamp1
+  window.vm.$appInvoked('appUrlExceptionMonitor', exceptionData, '')
   return Promise.reject(error)
 })
 
@@ -113,11 +100,8 @@ axios.interceptors.response.use(function (rst) {
 function getMethod (url, config = {}) {
   return new Promise((resolve, reject) => {
     axios.get(url, config).then(rst => {
-      return resolve(rst.data || rst)
+      return resolve(rst.body || rst)
     }).catch(error => {
-      if ((error.message.search('timeout') !== -1 && error.code === 'ECONNABORTED') || error.message.search('Network') !== -1) {
-        error.message = '您的网络不给力，请稍后再试'
-      }
       return reject(error)
     })
   })
@@ -133,11 +117,23 @@ function getMethod (url, config = {}) {
 function postMethod (url, data = {}, config = {}) {
   return new Promise((resolve, reject) => {
     axios.post(url, data, config).then(rst => {
-      return resolve(rst.data || rst)
+      return resolve(rst.body || rst)
     }).catch(error => {
-      if ((error.message.search('timeout') !== -1 && error.code === 'ECONNABORTED') || error.message.search('Network') !== -1) {
-        error.message = '您的网络不给力，请稍后再试'
-      }
+      return reject(error)
+    })
+  })
+}
+
+/**
+ * all
+ * @param arr
+ * @returns {Promise<any>}
+ */
+function allMethod (arr) {
+  return new Promise((resolve, reject) => {
+    axios.all(arr).then((...rsts) => {
+      return resolve(rsts)
+    }).catch(error => {
       return reject(error)
     })
   })
@@ -145,5 +141,6 @@ function postMethod (url, data = {}, config = {}) {
 
 export default {
   get: getMethod,
-  post: postMethod
+  post: postMethod,
+  all: allMethod
 }

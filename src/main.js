@@ -1,5 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import './assets/css/reset.css'
+import './assets/css/1px.less'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
@@ -51,39 +53,23 @@ if (process.env.NODE_ENV === 'production') {
       var data = {}
       // 不一定所有浏览器都支持col参数
       col = col || (window.event && window.event.errorCharacter) || 0
-
       data.url = window.location.href
       data.line = line
       data.col = col
       data.errMessage = msg || error.message
-      if (!!error && !!error.stack) {
+      data.msg = ''
+      if (error && error !== null && error.stack && error.stack !== null) {
         // 如果浏览器有堆栈信息
         // 直接使用
         data.msg = error.stack.toString()
-      } else if (window.arguments.callee) {
-        // 尝试通过callee拿堆栈信息
-        let ext = []
-        let f = window.arguments.callee.caller
-        let c = 3
-        // 这里只拿三层堆栈信息
-        while (f && (--c > 0)) {
-          ext.push(f.toString())
-          if (f === f.caller) {
-            break// 如果有环
-          }
-          f = f.caller
-        }
-        ext = ext.join(',')
-        // console.log(data)
-        if (error.stack) {
-          data.msg = error.stack.toString()
-        } else {
-          data.meg = JSON.stringify(msg)
-        }
       }
       // console
       // 把data上报到后台！
       // console.log(data)
+      // 部分安卓手机app启动时候初始化时候会报错
+      if (data.msg.indexOf('WebViewJavascriptBridge') !== -1) {
+        return true
+      }
       console.log('错误收集 --- > ' + JSON.stringify(data))
       window.vm.$appInvoked('appUploadException', {error: data}, '')
     }, 0)
@@ -93,6 +79,6 @@ if (process.env.NODE_ENV === 'production') {
   // 添加版本信息
   let vData = new Date()
   let m = (vData.getMonth() + 1) + ''
-  let d = vData.getDay() + ''
+  let d = vData.getDate() + ''
   console.log('版本号:', VERSION + '_' + (m.length === 1 ? ('0' + m) : m) + '' + (d.length === 1 ? ('0' + d) : d))
 }
