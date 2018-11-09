@@ -76,9 +76,6 @@ if (process.env.NODE_ENV === 'production') {
     return true
   }
 
-  // 添加版本信息
-  let vData = new Date()
-  let m = (vData.getMonth() + 1) + ''
-  let d = vData.getDate() + ''
-  console.log('版本号:', VERSION + '_' + (m.length === 1 ? ('0' + m) : m) + '' + (d.length === 1 ? ('0' + d) : d))
+  // 添加版本信息  VERSION => 取package.json 'version'字段
+  console.log('版本号:', VERSION)
 }

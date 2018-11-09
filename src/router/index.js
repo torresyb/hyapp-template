@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HomeIndex from '@/pages/home/index'
+const HomeIndex = resolve => require(['@/pages/home/index'], resolve)
 
 Vue.use(Router)
 

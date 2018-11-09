@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import qs from 'qs'
+import qs from 'qs'
 
 // axios全局配置
 axios.defaults.withCredentials = true
@@ -31,8 +31,17 @@ axios.interceptors.request.use(function (config) {
   if (config.data && config.data.type === 'upload') {
     config.headers['Content-Type'] = 'multipart/form-data'
   } else {
-    config.headers['Content-Type'] = 'application/json'
+    config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json'
   }
+  config.headers.token = '3AD17D3EFF1EAD2E24B61753C0D5127F85005DD945F66A3F4614D0BD699FA7DF'
+  config.headers.terminalId = '1'
+  // 产品id 立即贷写死是10002
+  config.headers.pid = '10002'
+  config.headers.terminalType = 'ljd_3rd'
+  config.headers.os = window.vm.$tools.getBrowser() === 'iOS' ? 'ios' : 'android'
+  // version 和 channel 字段需要找产品确认
+  config.headers.channel = 'test_channel'
+  config.headers.version = '9.2.1'
   if (isApp) { // 移动端
     return reqInterceptor(config).then(rst => {
       return rst
@@ -40,6 +49,8 @@ axios.interceptors.request.use(function (config) {
   } else { // pc端
     if (config.method === 'post' && config.data && config.data.type === 'upload') {
       config.data = config.data.form
+    } else if (config.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      config.data = qs.stringify(config.data)
     }
     return config
   }
@@ -58,12 +69,12 @@ let exceptionData = {
 
 // 返回拦截
 axios.interceptors.response.use(function (rst) {
-  if (rst.data.respCode === '1000') {
-    return Promise.resolve(rst.data)
-  } else if (rst.data.respCode === '1008') { // 1008:未登录
-    window.vm.$appInvoked('appTokenInvalid', {message: rst.data.respMsg})
-    return Promise.reject(rst.data)
-  } else if (rst.data.respCode === '1001') { // 1001:失败!
+  if (rst.data.code === 'success') {
+    return Promise.resolve(rst.data.result)
+  } else if (rst.data.code === 'uc_user_007') { // 1008:未登录
+    window.vm.$appInvoked('appTokenInvalid', {message: rst.data.error.message})
+    return Promise.reject(rst.data.error.message)
+  } else if (rst.data.code === '"SYS_ERR_0001"') { // 1001:系统异常!
     let timestamp2 = Date.parse(new Date())
     let url = rst.request.responseURL
     exceptionData.errorContent = rst.data.respMsg && rst.data.respMsg.substring(0, 98)
