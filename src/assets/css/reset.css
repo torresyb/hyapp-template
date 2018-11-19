@@ -11,7 +11,8 @@ blockquote,body,button,dd,dl,dt,fieldset,form,h1,h2,h3,h4,h5,h6,hr,input,legend,
 
 img {
   border: 0 none;
-  vertical-align: top
+  vertical-align: top;
+  content: normal !important;
 }
 
 em,i {
